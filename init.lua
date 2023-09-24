@@ -1,3 +1,3 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
 require("config.lazy")
-vim.cmd([[colorscheme moonfly]])
+vim.cmd([[colorscheme onedark_dark]])
