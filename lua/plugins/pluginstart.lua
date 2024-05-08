@@ -16,6 +16,8 @@ return {
     -- opts will be merged with the parent spec
     opts = { use_diagnostic_signs = true },
   },
+  
+  {'luk400/vim-jukit'},
 
   -- disable trouble
   { "folke/trouble.nvim", enabled = false },
