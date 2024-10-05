@@ -1,5 +1,6 @@
 -- since this is just an example spec, don't actually load anything here and return an empty spec
 -- stylua: ignore
+
 -- every spec file under the "plugins" directory will be loaded automatically by lazy.nvim
 --
 -- In your plugin files, you can:
@@ -62,18 +63,59 @@ return {
   },
 
   -- add pyright to lspconfig
-  {
-    "neovim/nvim-lspconfig",
-    ---@class PluginLspOpts
-    opts = {
-      ---@type lspconfig.options
-      servers = {
-        -- pyright will be automatically installed with mason and loaded with lspconfig
-        pyright = {},
+ {
+  "neovim/nvim-lspconfig",
+  ---@class PluginLspOpts
+  opts = {
+    ---@type lspconfig.options
+    servers = {
+      -- pyright will be automatically installed with mason and loaded with lspconfig
+      pyright = {
+        settings = {
+          python = {
+            analysis = {
+              typeCheckingMode = "off",      -- Enable strict type checking for better diagnostics
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = "workspace",     -- Show diagnostics for the entire workspace
+            },
+          },
+        },
+        on_attach = function(client, bufnr)
+          local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+          local opts = { noremap = true, silent = true }
+
+          -- LSP Keybindings
+          buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)       -- Go to definition
+          buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)             -- Show hover documentation
+          buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)   -- Go to implementation
+          buf_set_keymap('n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)   -- Rename symbol
+          buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts) -- Code action
+          buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.format({ async = true })<CR>', opts) -- Format file
+
+          -- Format on save for Python files
+          if client.server_capabilities.documentFormattingProvider then
+            vim.cmd [[
+              augroup LspAutocommands
+                autocmd! * <buffer>
+                autocmd BufWritePre <buffer> lua vim.lsp.buf.format({ async = false })
+              augroup END
+            ]]
+          end
+
+          -- Optional: Configure diagnostics appearance
+          vim.diagnostic.config({
+            virtual_text = true,
+            signs = true,
+            underline = true,
+            update_in_insert = false,
+            severity_sort = true,
+          })
+        end,
       },
     },
   },
-
+},
   -- add tsserver and setup with typescript.nvim instead of lspconfig
   {
     "neovim/nvim-lspconfig",
