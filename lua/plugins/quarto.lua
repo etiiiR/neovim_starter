@@ -1,5 +1,4 @@
 return {
-
   { -- requires plugins in lua/plugins/treesitter.lua and lua/plugins/lsp.lua
     -- for complete functionality (language features)
     "quarto-dev/quarto-nvim",
@@ -20,11 +19,6 @@ return {
     opts = {
       custom_language_formatting = {
         python = {
-          extension = "qmd",
-          style = "quarto",
-          force_ft = "quarto",
-        },
-        r = {
           extension = "qmd",
           style = "quarto",
           force_ft = "quarto",
@@ -122,7 +116,7 @@ return {
 
   {
     "benlubas/molten-nvim",
-    enabled = false,
+    enabled = true,
     build = ":UpdateRemotePlugins",
     init = function()
       vim.g.molten_image_provider = "image.nvim"
