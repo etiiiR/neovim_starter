@@ -85,6 +85,7 @@ return {
         "stylua",
         "shellcheck",
         "shfmt",
+        "pyright",
         "flake8",
       },
     },
